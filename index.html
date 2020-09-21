@@ -10,6 +10,38 @@
   <script src="vendors/jquery/jquery-3.5.1.min.js"></script>
   <link rel="stylesheet" href="vendors/icono/icono.min.css">
   <style>
+    body {
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+    }
+
+    div {
+      padding: 3px;
+    }
+
+    button {
+      outline: none;
+      background: white;
+    }
+
+    button:hover, button:focus {
+      box-shadow: 0 0 5px grey;
+      cursor: pointer;
+    }
+
+    input,
+    textarea {
+      border: none;
+      outline: none;
+      box-shadow: 0 0 5px grey;
+      padding: 3px;
+      transition: 0.2s;
+    }
+
+    input:focus,
+    textarea:focus {
+      padding: 5px;
+    }
+
     textarea {
       resize: none;
       box-sizing: padding-box;
