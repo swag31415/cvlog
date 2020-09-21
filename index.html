@@ -37,7 +37,7 @@
           Object.keys(json).forEach(id => {
             result.append(div(to_istr(id), ": ", to_istr(json[id])))
           })
-          result.find("div:not(div:last-child)").append(",")
+          result.contents().filter("div:not(:last-child)").append(",")
           result.append("}")
           break;
         case "function": return json()
