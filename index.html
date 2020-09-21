@@ -20,6 +20,14 @@
       if (body) result.append(...body)
       return result
     }
+    function plus_button() {
+      return $("<button></button>")
+        .addClass("icono-plusCircle")
+    }
+    function cross_button() {
+      return $("<button></button>")
+        .addClass("icono-crossCircle")
+    }
   </script>
   <script>
     function get_input(required = false) {
@@ -32,12 +40,12 @@
     function to_istr(json) {
       var result = div()
       if (Array.isArray(json)) {
-        result.append("[")
-        json.forEach(item => {
-          result.append(div(to_istr(item)))
-        });
-        result.contents().filter("div:not(:last-child)").append(",")
-        result.append("]")
+        result.append("[", plus_button().click(function () {
+          var insert = to_istr(json[0])
+          insert.append(cross_button().click(function () { $(this).parent().remove() }))
+          $(this).after(insert)
+          insert.not(":last-child").append(",")
+        }), "]")
       } else switch (typeof json) {
         case "object":
           result.append("{")
