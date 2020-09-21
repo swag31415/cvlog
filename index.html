@@ -13,6 +13,12 @@
     div {
       padding-left: 2em;
     }
+
+    textarea {
+      resize: none;
+      box-sizing: padding-box;
+      overflow: hidden;
+    }
   </style>
   <script> // Helper funcs
     function div(...body) {
@@ -28,6 +34,19 @@
       return $("<button></button>")
         .addClass("icono-crossCircle")
     }
+    $(document) // Auto-Expanding textareas!!!
+      .one('focus.autoExpand', 'textarea.autoExpand', function () {
+        var savedValue = this.value;
+        this.value = '';
+        this.baseScrollHeight = this.scrollHeight;
+        this.value = savedValue;
+      })
+      .on('input.autoExpand', 'textarea.autoExpand', function () {
+        var minRows = this.getAttribute('data-min-rows') | 0, rows;
+        this.rows = minRows;
+        rows = Math.ceil((this.scrollHeight - this.baseScrollHeight) / 16);
+        this.rows = minRows + rows;
+      });
   </script>
   <script>
     function get_input(required = false) {
@@ -35,6 +54,13 @@
         .attr("type", "text")
       if (required) result.addClass("req")
       return result
+    }
+    function get_big_input(required = false) {
+      var result = $("<textarea></textarea>")
+        .attr({ "cols": 50, "rows": 3, "data-min-rows": 3 })
+        .addClass("autoExpand")
+      if (required) result.addClass("req")
+      return div(result)
     }
     // Converts json into an interactive string
     function to_istr(json) {
@@ -63,6 +89,7 @@
 
     const input = () => get_input(true)
     const optional_input = () => get_input()
+    const big_input = () => get_big_input(true)
 
     $("body").append(to_istr(
       {
@@ -76,6 +103,25 @@
           {
             "test_name": input,
             "test_score": input
+          }
+        ],
+        "experience": [
+          {
+            "organization_name": input,
+            "position": input,
+            "descriptors": [
+              big_input
+            ],
+            "location": optional_input,
+            "start_date": input,
+            "end_date": optional_input,
+            "contacts": [
+              {
+                "contact_name": input,
+                "phone_number": optional_input,
+                "email": optional_input
+              }
+            ]
           }
         ]
       }
