@@ -9,6 +9,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="vendors/jquery/jquery-3.5.1.min.js"></script>
   <link rel="stylesheet" href="vendors/icono/icono.min.css">
+  <style>
+    div {
+      padding-left: 2em;
+    }
+  </style>
+  <script> // Helper funcs
+    function div(...body) {
+      var result = $("<div></div>")
+      if (body) result.append(...body)
+      return result
+    }
+  </script>
+  <script>
+    function get_input(required = false) {
+      var result = $("<input></input>")
+        .attr("type", "text")
+      if (required) result.addClass("req")
+      return result
+    }
+    // Converts json into an interactive string
+    function to_istr(json) {
+      var result = div()
+      switch (typeof json) {
+        case "object":
+          result.append("{")
+          Object.keys(json).forEach(id => {
+            result.append(div(to_istr(id), ": ", to_istr(json[id])))
+          })
+          result.find("div:not(div:last-child)").append(",")
+          result.append("}")
+          break;
+        case "function": return json()
+        default: return json
+      }
+      return result
+    }
+
+    const required_input = () => get_input(true)
+    const input = () => get_input()
+
+    $("body").append(to_istr(
+      {
+        "name": required_input,
+        "phone_number": required_input,
+        "email": required_input,
+        "linkedin": input,
+        "github": input,
+        "gpa": input
+      }
+    ))
+  </script>
 </head>
 
 </html>
