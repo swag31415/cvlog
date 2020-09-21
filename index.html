@@ -92,6 +92,20 @@
       return result
     }
 
+    document.onkeydown = (e) => {
+      if (e.ctrlKey && e.which == 83) { // Ctrl + S
+        e.preventDefault()
+        var istr = $("body > div").clone()
+        istr.find("input,textarea").each(function () {
+          $(this).replaceWith('"' + $(this).val() + '"')
+        })
+        istr.find("p").each(function () {
+          $(this).replaceWith(`"` + $(this).text() + `"`)
+        })
+        console.log(istr.text()) // TODO save to file
+      }
+    }
+
     const input = () => get_input(true)
     const optional_input = () => get_input()
     const big_input = () => get_big_input(true)
