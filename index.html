@@ -142,6 +142,69 @@
               }
             ]
           }
+        ],
+        "education": [
+          {
+            "institution_name": input,
+            "degree": input,
+            "location": optional_input,
+            "start_date": input,
+            "end_date": optional_input,
+            "references": [
+              {
+                "reference_name": input,
+                "phone_number": optional_input,
+                "email": optional_input
+              }
+            ],
+            "coursework": [
+              big_input
+            ]
+          }
+        ],
+        "activities": [
+          {
+            "organization_name": input,
+            "leadership_position": optional_input,
+            "descriptors": [
+              big_input
+            ],
+            "location": optional_input,
+            "start_date": input,
+            "end_date": optional_input,
+            "contacts": [
+              {
+                "contact_name": input,
+                "phone_number": optional_input,
+                "email": optional_input
+              }
+            ]
+          }
+        ],
+        "skills": [
+          {
+            "name": input,
+            "proficiency": input
+          }
+        ],
+        "languages": [
+          {
+            "name": input,
+            "proficiency": input
+          }
+        ],
+        "certifications": [
+          {
+            "name": input,
+            "date_acquired": optional_input,
+            "expires_on": optional_input
+          }
+        ],
+        "honors": [
+          {
+            "name": input,
+            "date_acquired": input
+          }
         ]
       }
     ))
