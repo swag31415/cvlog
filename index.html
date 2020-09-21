@@ -79,7 +79,7 @@
       .on('input.autoExpand', 'textarea.autoExpand', function () {
         var minRows = this.getAttribute('data-min-rows') | 0, rows;
         this.rows = minRows;
-        rows = Math.ceil((this.scrollHeight - this.baseScrollHeight) / 16);
+        rows = Math.ceil((this.scrollHeight - 51) / 16); // Hardcoded this.baseScrollHeight == 51
         this.rows = minRows + rows;
       });
   </script>
