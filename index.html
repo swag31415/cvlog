@@ -2,6 +2,7 @@
 <html>
 
 <body>
+  <div id=br-container></div>
 </body>
 
 <head>
@@ -59,9 +60,10 @@
       if (body) result.append(...body)
       return result.css("display", "inline")
     }
-    function plus_button() {
+    function button(button_class, func) {
       return $("<button></button>")
-        .addClass("icono-plusCircle")
+        .addClass(button_class)
+        .click(func)
     }
     function cross_button() {
       return $("<button></button>")
@@ -100,9 +102,9 @@
       var result = div()
       if (Array.isArray(json)) {
         result = inline_div()
-        result.append("[", plus_button().click(function () {
+        result.append("[", button("icono-plusCircle", function () {
           var insert = to_istr(json[0])
-          insert.append(cross_button().click(function () { $(this).parent().remove() }))
+          insert.append(button("icono-crossCircle", function () { $(this).parent().remove() }))
           $(this).after(insert)
           insert.not(":last-child").append(",")
         }), "]")
