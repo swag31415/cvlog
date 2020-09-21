@@ -31,7 +31,14 @@
     // Converts json into an interactive string
     function to_istr(json) {
       var result = div()
-      switch (typeof json) {
+      if (Array.isArray(json)) {
+        result.append("[")
+        json.forEach(item => {
+          result.append(div(to_istr(item)))
+        });
+        result.contents().filter("div:not(:last-child)").append(",")
+        result.append("]")
+      } else switch (typeof json) {
         case "object":
           result.append("{")
           Object.keys(json).forEach(id => {
@@ -46,17 +53,23 @@
       return result
     }
 
-    const required_input = () => get_input(true)
-    const input = () => get_input()
+    const input = () => get_input(true)
+    const optional_input = () => get_input()
 
     $("body").append(to_istr(
       {
-        "name": required_input,
-        "phone_number": required_input,
-        "email": required_input,
-        "linkedin": input,
-        "github": input,
-        "gpa": input
+        "name": input,
+        "phone_number": input,
+        "email": input,
+        "linkedin": optional_input,
+        "github": optional_input,
+        "gpa": optional_input,
+        "test_scores": [
+          {
+            "test_name": input,
+            "test_score": input
+          }
+        ]
       }
     ))
   </script>
