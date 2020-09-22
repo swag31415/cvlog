@@ -4,6 +4,7 @@
 <body>
   <div id=br-container></div>
   <div id=modal></div>
+  <input type="file" accept=".json" id="upload" style="display: none;"></input>
 </body>
 
 <head>
@@ -297,10 +298,26 @@
       }
     ))
 
-    $("#br-container").append(button("icono-moon", function () {
-      $(":root").toggleClass("darkmode")
-      $(this).toggleClass("icono-moon icono-sun")
-    }))
+    reader = new FileReader()
+    reader.onload = (e) => {
+      let upload = JSON.parse(e.target.result)
+      // TODO turn the json into the page
+    }
+    reader.onerror = (e) => reject(e)
+    $("#upload").change(function () {
+      let upload = this.files[0]
+      reader.readAsText(upload)
+    })
+
+    $("#br-container").append(
+      button("icono-moon", function () {
+        $(":root").toggleClass("darkmode")
+        $(this).toggleClass("icono-moon icono-sun")
+      }),
+      button("icono-caretUpSquare", function () {
+        $("#upload").click()
+      })
+    )
   </script>
 </head>
 
