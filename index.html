@@ -183,7 +183,7 @@
                 $("#modal").css("display", "none")
                 $(this).remove()
                 event.preventDefault()
-                var istr = $("body > div").clone()
+                var istr = $("#istr").clone()
                 istr.find("input,textarea").each(function () {
                   $(this).replaceWith('"' + $(this).val() + '"')
                 })
@@ -295,7 +295,7 @@
           }
         ]
       }
-    ))
+    ).attr("id", "istr"))
 
     $("#br-container").append(button("icono-moon", function () {
       $(":root").toggleClass("darkmode")
