@@ -166,6 +166,11 @@
     }
 
     document.onkeydown = (e) => {
+      if (e.which == 27) { // Escape
+        $("#modal")
+          .css("display", "none")
+          .empty()
+      }
       if (e.ctrlKey && e.which == 83) { // Ctrl + S
         e.preventDefault()
         $("#modal")
@@ -174,11 +179,9 @@
             .css("font-size", "xx-large")
             .attr("placeholder", "Enter Filename")
             .keydown(function (event) {
-              if (event.key === "Enter" || event.key === "Escape") {
+              if (event.key === "Enter") {
                 $("#modal").css("display", "none")
                 $(this).remove()
-              }
-              if (event.key === "Enter") {
                 event.preventDefault()
                 var istr = $("body > div").clone()
                 istr.find("input,textarea").each(function () {
