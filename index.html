@@ -159,7 +159,7 @@
           result.append("}")
           break;
         case "function": return json()
-        case "string": return inline_div(json)
+        case "string": return inline_div('"' + json + '"')
         default: return json
       }
       return result
@@ -183,9 +183,6 @@
                 var istr = $("body > div").clone()
                 istr.find("input,textarea").each(function () {
                   $(this).replaceWith('"' + $(this).val() + '"')
-                })
-                istr.find("p").each(function () {
-                  $(this).replaceWith('"' + $(this).text() + '"')
                 })
                 save(istr.text(), $(this).val())
               }
