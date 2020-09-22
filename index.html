@@ -3,6 +3,7 @@
 
 <body>
   <div id=br-container></div>
+  <div id=modal></div>
 </body>
 
 <head>
@@ -70,6 +71,19 @@
       position: fixed;
       bottom: 0;
       right: 0;
+    }
+
+    #modal {
+      display: none;
+      z-index: 1;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
     }
   </style>
   <script> // Helper funcs
@@ -154,14 +168,29 @@
     document.onkeydown = (e) => {
       if (e.ctrlKey && e.which == 83) { // Ctrl + S
         e.preventDefault()
-        var istr = $("body > div").clone()
-        istr.find("input,textarea").each(function () {
-          $(this).replaceWith('"' + $(this).val() + '"')
-        })
-        istr.find("p").each(function () {
-          $(this).replaceWith(`"` + $(this).text() + `"`)
-        })
-        save(istr.text(), "resume")
+        $("#modal")
+          .css("display", "flex")
+          .append(get_input()
+            .css("font-size", "xx-large")
+            .attr("placeholder", "Enter Filename")
+            .keydown(function (event) {
+              if (event.key === "Enter" || event.key === "Escape") {
+                $("#modal").css("display", "none")
+                $(this).remove()
+              }
+              if (event.key === "Enter") {
+                event.preventDefault()
+                var istr = $("body > div").clone()
+                istr.find("input,textarea").each(function () {
+                  $(this).replaceWith('"' + $(this).val() + '"')
+                })
+                istr.find("p").each(function () {
+                  $(this).replaceWith('"' + $(this).text() + '"')
+                })
+                save(istr.text(), $(this).val())
+              }
+            })
+          )
       }
     }
 
