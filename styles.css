@@ -1,0 +1,72 @@
+:root {
+  --fore: black;
+  --back: white;
+}
+
+:root.darkmode {
+  --fore: white;
+  --back: black;
+}
+
+body {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  background: var(--back);
+  color: var(--fore);
+}
+
+div {
+  padding: 3px;
+}
+
+button {
+  outline: none;
+  background: var(--back);
+}
+
+button:hover,
+button:focus {
+  box-shadow: 0 0 5px var(--fore);
+  cursor: pointer;
+}
+
+input,
+textarea {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  border: none;
+  outline: none;
+  box-shadow: 0 0 5px var(--fore);
+  background: var(--back);
+  color: var(--fore);
+  padding: 3px;
+  transition: 0.2s;
+}
+
+input:focus,
+textarea:focus {
+  padding: 5px;
+}
+
+textarea {
+  resize: none;
+  box-sizing: padding-box;
+  overflow: hidden;
+}
+
+#br-container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+#modal {
+  display: none;
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
