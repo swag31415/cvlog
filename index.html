@@ -1,234 +1,133 @@
-<!doctype html>
-<html>
-
-<body>
-  <div id=br-container></div>
-  <div id=modal></div>
-</body>
+<!DOCTYPE html>
 
 <head>
-  <title>CVLog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="vendors/jquery/jquery-3.5.1.min.js"></script>
-  <script src="vendors/filesaver/FileSaver.min.js"></script>
-  <link rel="stylesheet" href="vendors/icono/icono.min.css">
-  <link rel="stylesheet" href="styles.css">
-  <script> // Helper funcs
-    function div(...body) {
-      var result = $("<div></div>")
-      if (body) result.append(...body)
-      return result.css("padding-left", "2em")
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>cvlog</title>
+  <link rel="icon" href="logo.svg" type="image/x-icon">
+  <style>
+    body {
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     }
-    function inline_div(...body) {
-      var result = $("<div></div>")
-      if (body) result.append(...body)
-      return result.css("display", "inline")
+    div {
+      padding-left: 2em;
     }
-    function button(button_class, func) {
-      return $("<button></button>")
-        .addClass(button_class)
-        .click(func)
-    }
-    function cross_button() {
-      return $("<button></button>")
-        .addClass("icono-crossCircle")
-    }
-    $(document) // Auto-Expanding textareas!!!
-      .one('focus.autoExpand', 'textarea.autoExpand', function () {
-        var savedValue = this.value;
-        this.value = '';
-        this.baseScrollHeight = this.scrollHeight;
-        this.value = savedValue;
-      })
-      .on('input.autoExpand', 'textarea.autoExpand', function () {
-        var minRows = this.getAttribute('data-min-rows') | 0, rows;
-        this.rows = minRows;
-        rows = Math.ceil((this.scrollHeight - 51) / 16); // Hardcoded this.baseScrollHeight == 51
-        this.rows = minRows + rows;
-      });
-    function save(text, filename) {
-      var blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, filename + (filename.includes('.') ? '' : '.json'))
-    }
-  </script>
-  <script>
-    function get_input(required = false) {
-      var result = $("<input></input>")
-        .attr("type", "text")
-      if (required) result.addClass("req")
-      return result
-    }
-    function get_big_input(required = false) {
-      var result = $("<textarea></textarea>")
-        .attr({ "cols": 50, "rows": 3, "data-min-rows": 3 })
-        .addClass("autoExpand")
-      if (required) result.addClass("req")
-      return div(result)
-    }
-    // Converts json into an interactive string
-    function to_istr(json) {
-      var result = div()
-      if (Array.isArray(json)) {
-        result = inline_div()
-        result.append("[", button("icono-plusCircle", function () {
-          var insert = to_istr(json[0])
-          insert.append(button("icono-crossCircle", function () { $(this).parent().remove() }))
-          $(this).after(insert)
-          insert.not(":last-child").append(",")
-        }), "]")
-      } else switch (typeof json) {
-        case "object":
-          result.append("{")
-          Object.keys(json).forEach(id => {
-            result.append(div(to_istr(id), ": ", to_istr(json[id])))
-          })
-          result.contents().filter("div:not(:last-child)").append(",")
-          result.append("}")
-          break;
-        case "function": return json()
-        case "string": return inline_div('"' + json + '"')
-        default: return json
-      }
-      return result
-    }
-
-    document.onkeydown = (e) => {
-      if (e.which == 27) { // Escape
-        $("#modal")
-          .css("display", "none")
-          .empty()
-      }
-      if (e.ctrlKey && e.which == 83) { // Ctrl + S
-        e.preventDefault()
-        $("#modal")
-          .css("display", "flex")
-          .append(get_input()
-            .css("font-size", "xx-large")
-            .attr("placeholder", "Enter Filename")
-            .keydown(function (event) {
-              if (event.key === "Enter") {
-                $("#modal").css("display", "none")
-                $(this).remove()
-                event.preventDefault()
-                var istr = $("body > div").clone()
-                istr.find("input,textarea").each(function () {
-                  $(this).replaceWith('"' + $(this).val() + '"')
-                })
-                save(istr.text(), $(this).val())
-              }
-            })
-          )
-      }
-    }
-
-    const input = () => get_input(true)
-    const optional_input = () => get_input()
-    const big_input = () => get_big_input(true)
-
-    $("body").append(to_istr(
-      {
-        "name": input,
-        "phone_number": input,
-        "email": input,
-        "linkedin": optional_input,
-        "github": optional_input,
-        "gpa": optional_input,
-        "test_scores": [
-          {
-            "test_name": input,
-            "test_score": input
-          }
-        ],
-        "experience": [
-          {
-            "organization_name": input,
-            "position": input,
-            "descriptors": [
-              big_input
-            ],
-            "location": optional_input,
-            "start_date": input,
-            "end_date": optional_input,
-            "contacts": [
-              {
-                "contact_name": input,
-                "phone_number": optional_input,
-                "email": optional_input
-              }
-            ]
-          }
-        ],
-        "education": [
-          {
-            "institution_name": input,
-            "degree": input,
-            "location": optional_input,
-            "start_date": input,
-            "end_date": optional_input,
-            "references": [
-              {
-                "reference_name": input,
-                "phone_number": optional_input,
-                "email": optional_input
-              }
-            ],
-            "coursework": [
-              big_input
-            ]
-          }
-        ],
-        "activities": [
-          {
-            "organization_name": input,
-            "leadership_position": optional_input,
-            "descriptors": [
-              big_input
-            ],
-            "location": optional_input,
-            "start_date": input,
-            "end_date": optional_input,
-            "contacts": [
-              {
-                "contact_name": input,
-                "phone_number": optional_input,
-                "email": optional_input
-              }
-            ]
-          }
-        ],
-        "skills": [
-          {
-            "name": input,
-            "proficiency": input
-          }
-        ],
-        "languages": [
-          {
-            "name": input,
-            "proficiency": input
-          }
-        ],
-        "certifications": [
-          {
-            "name": input,
-            "date_acquired": optional_input,
-            "expires_on": optional_input
-          }
-        ],
-        "honors": [
-          {
-            "name": input,
-            "date_acquired": input
-          }
-        ]
-      }
-    ))
-
-    $("#br-container").append(button("icono-moon", function () {
-      $(":root").toggleClass("darkmode")
-      $(this).toggleClass("icono-moon icono-sun")
-    }))
-  </script>
+  </style>
 </head>
 
-</html>
+<body style="background-color: black; color: wheat;">
+
+<script>
+const resume = {
+  name: {input_type: 'text', data: ""},
+  phone_number: {input_type: 'text', data: ""},
+  email: {input_type: 'text', data: ""},
+  linkedin: {input_type: 'text', data: ""},
+  github: {input_type: 'text', data: ""},
+  gpa: {input_type: 'text', data: ""},
+  test_scores: {input_type: 'list', format: {
+      test_name: {input_type: 'text', data: ""},
+      test_score: {input_type: 'text', data: ""}
+    }, data: []},
+  experience: {input_type: 'list', format: {
+      organization_name: {input_type: 'text', data: ""},
+      position: {input_type: 'text', data: ""},
+      descriptors: {input_type: 'list', format: {input_type: 'big_text', data: ""}, data: []},
+      location: {input_type: 'text', data: ""},
+      start_date: {input_type: 'text', data: ""},
+      end_date: {input_type: 'text', data: ""},
+      contacts: {input_type: 'list', format: {
+          contact_name: {input_type: 'text', data: ""},
+          phone_number: {input_type: 'text', data: ""},
+          email: {input_type: 'text', data: ""}
+        }, data: []}
+    }, data: []},
+  education: {input_type: 'list', format: {
+      institution_name: {input_type: 'text', data: ""},
+      degree: {input_type: 'text', data: ""},
+      location: {input_type: 'text', data: ""},
+      start_date: {input_type: 'text', data: ""},
+      end_date: {input_type: 'text', data: ""},
+      references: {input_type: 'list', format: {
+          reference_name: {input_type: 'text', data: ""},
+          phone_number: {input_type: 'text', data: ""},
+          email: {input_type: 'text', data: ""}
+        }, data: []},
+      coursework: {input_type: 'list', format: {input_type: 'big_text', data: ""}, data: []}
+    }, data: []},
+  activities: {input_type: 'list', format: {
+      organization_name: {input_type: 'text', data: ""},
+      leadership_position: {input_type: 'text', data: ""},
+      descriptors: {input_type: 'list', format: {input_type: 'big_text', data: ""}, data: []},
+      location: {input_type: 'text', data: ""},
+      start_date: {input_type: 'text', data: ""},
+      end_date: {input_type: 'text', data: ""},
+      contacts: {input_type: 'list', format: {
+          contact_name: {input_type: 'text', data: ""},
+          phone_number: {input_type: 'text', data: ""},
+          email: {input_type: 'text', data: ""}
+        }, data: []}
+    }, data: []},
+  skills: {input_type: 'list', format: {
+      name: {input_type: 'text', data: ""},
+      proficiency: {input_type: 'text', data: ""}
+    }, data: []},
+  languages: {input_type: 'list', format: {
+      name: {input_type: 'text', data: ""},
+      proficiency: {input_type: 'text', data: ""}
+    }, data: []},
+  certifications: {input_type: 'list', format: {
+      name: {input_type: 'text', data: ""},
+      date_acquired: {input_type: 'text', data: ""},
+      expires_on: {input_type: 'text', data: ""}
+    }, data: []},
+  honors: {input_type: 'list', format: {
+      name: {input_type: 'text', data: ""},
+      date_acquired: {input_type: 'text', data: ""}
+    }, data: []}
+}
+
+function el(type, ...children) {
+  result = document.createElement(type)
+  if (children) result.append(...children.flat(1))
+  return result
+}
+
+function inp(type, value) {
+  result = el("input")
+  result.setAttribute("type", type)
+  result.setAttribute("value", value)
+  return result
+}
+
+function btn(text, on_click) {
+  result = inp("button", text)
+  result.addEventListener("click", on_click)
+  return result
+}
+
+function trans(obj) {
+  switch (obj.input_type) {
+    case "text": return inp("text", obj.data)
+    case "big_text": return el("div", inp("textarea", obj.data))
+    case "list":
+      button = btn("add", e => {
+        templ = trans(obj.format)
+        templ.append(btn("remove", e => e.target.parentElement.remove()))
+        e.target.before(templ)
+      })
+      return ["[", ...obj.data.map(to_istr), button, "]"]
+    default: return to_istr(obj)
+  }
+}
+
+function to_istr(json) {
+  return el("div", "{", ...Object.entries(json).map(([name, value]) => {
+    return el("div", name, ": ", trans(value))
+  }), "}")
+}
+
+document.body.append(to_istr(resume))
+
+</script>
+</body>
